@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Чистая вода">
+    <meta name="theme-color" content="#7BC4DE">
+    <meta name="description" content="Чистая вода — очистка смесителей с вау-эффектом">
+    
+    <title>Чистая вода</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%237BC4DE' width='512' height='512' rx='100'/><path fill='white' d='M256 80c-64 64-128 136-128 200 0 70.7 57.3 128 128 128s128-57.3 128-128c0-64-64-136-128-200z'/></svg>">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --blue: #A8D4E6;
+            --blue-deep: #7BC4DE;
+            --mint: #B8E5D5;
+            --mint-deep: #8ED4BE;
+            --bg: #F8FCFD;
+            --text: #2D3436;
+            --text-light: #78909C;
+            --gradient: linear-gradient(135deg, #7BC4DE 0%, #8ED4BE 100%);
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient);
+            padding: 16px 20px;
+            padding-top: calc(var(--safe-top) + 48px);
+            color: white;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .header-title svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        /* Content */
+        .content {
+            padding: 20px;
+            padding-bottom: calc(100px + var(--safe-bottom));
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        /* Promo Banner */
+        .promo-banner {
+            background: var(--gradient);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-banner .emoji {
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            font-size: 100px;
+            opacity: 0.2;
+        }
+
+        .promo-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .promo-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .promo-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .promo-text {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--blue-deep);
+            width: auto;
+        }
+
+        .btn-secondary {
+            background: #F0F7F9;
+            color: var(--text);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            margin-top: 8px;
+        }
+
+        /* Reminder Card */
+        .reminder-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        .reminder-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .reminder-info p {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .reminder-days {
+            padding: 8px 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .reminder-days.warning {
+            background: #FFF3E0;
+        }
+
+        .reminder-days.ok {
+            background: #E8F5E9;
+        }
+
+        .reminder-days .number {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .reminder-days.warning .number {
+            color: #FF9800;
+        }
+
+        .reminder-days.ok .number {
+            color: #4CAF50;
+        }
+
+        .reminder-days .label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #E8F4F8;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .progress-fill.warning {
+            background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);
+        }
+
+        /* Product Card */
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--gradient);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .product-badge.popular {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        }
+
+        .product-inner {
+            padding: 20px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .product-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            flex-shrink: 0;
+        }
+
+        .product-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-info h3 {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .product-info .desc {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .price-tag {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .old-price {
+            font-size: 14px;
+            color: #B0BEC5;
+            text-decoration: line-through;
+        }
+
+        .new-price {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .chevron {
+            color: #B0BEC5;
+        }
+
+        /* Video Card */
+        .video-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: white;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+
+        .video-thumb {
+            width: 70px;
+            height: 52px;
+            background: var(--gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .video-info {
+            flex: 1;
+        }
+
+        .video-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .video-info p {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .play-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: white;
+            margin-left: 2px;
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            padding-bottom: calc(12px + var(--safe-bottom));
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #B0BEC5;
+            font-size: 11px;
+            font-weight: 500;
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .tab-item.active {
+            color: var(--blue-deep);
+        }
+
+        .tab-item svg {
+            width: 24px;
+            height: 24px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .tab-badge {
+            position: absolute;
+            top: -4px;
+            right: 50%;
+            transform: translateX(12px);
+            background: #FF6B6B;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Cart Screen */
+        .cart-item {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .cart-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-info .price {
+            color: var(--blue-deep);
+            font-weight: 700;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #F0F7F9;
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--text);
+        }
+
+        .quantity-num {
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .cart-summary {
+            margin-top: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .summary-row .label {
+            color: var(--text-light);
+        }
+
+        .summary-row .value {
+            font-weight: 600;
+        }
+
+        .summary-row .value.green {
+            color: #4CAF50;
+        }
+
+        .summary-total {
+            border-top: 1px solid #E8F4F8;
+            padding-top: 16px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .summary-total .label {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .summary-total .value {
+            font-size: 20px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-state .emoji {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+
+        /* Profile */
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 36px;
+        }
+
+        .profile-name {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .profile-phone {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #E8F4F8;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--blue-deep);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .menu-item .label {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .menu-item .value {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            padding: 24px;
+            padding-bottom: calc(24px + var(--safe-bottom));
+            width: 100%;
+            max-height: 90vh;
+            overflow: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .modal-close svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        /* Product Detail */
+        .product-detail-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            margin: 0 auto 16px;
+        }
+
+        .product-detail-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .product-detail-price {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .product-detail-price .new-price {
+            font-size: 28px;
+        }
+
+        .product-items-title {
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #E8F4F8;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--mint-deep);
+            fill: none;
+            stroke-width: 2.5;
+        }
+
+        .product-warning {
+            background: #FFF8E1;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin: 16px 0;
+            font-size: 14px;
+            color: #F57C00;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E8F4F8;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--blue-deep);
+        }
+
+        .order-total {
+            background: #F0F7F9;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-total .value {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        /* Success */
+        .success-state {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .success-state .emoji {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .success-state h2 {
+            margin-bottom: 8px;
+        }
+
+        .success-state p {
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        /* Screen visibility */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Info Card */
+        .info-card {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .info-card .emoji {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .info-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .info-card p {
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Home Screen -->
+        <div id="screen-home" class="screen active">
+            <div class="header">
+                <div class="header-title">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8 6 4 10.5 4 14.5C4 18.6 7.6 22 12 22C16.4 22 20 18.6 20 14.5C20 10.5 16 6 12 2Z"/></svg>
+                    <h1>Чистая вода</h1>
+                </div>
+                <p>Чистые смесители — здоровая вода</p>
+            </div>
+            
+            <div class="content">
+                <!-- Promo Banner -->
+                <div class="card promo-banner">
+                    <div class="promo-content">
+                        <p class="promo-label">Специальное предложение</p>
+                        <h2 class="promo-title">Скидка 30% на Стандарт</h2>
+                        <p class="promo-text">Только до конца месяца!</p>
+                        <button class="btn btn-white" onclick="showProduct(1)">Подробнее</button>
+                    </div>
+                    <span class="emoji">💧</span>
+                </div>
+
+                <!-- Reminders -->
+                <h3 class="section-title">🔔 Напоминания</h3>
+                <div id="reminders-preview"></div>
+
+                <!-- Products -->
+                <h3 class="section-title">🛒 Наши наборы</h3>
+                <div id="products-list"></div>
+
+                <!-- Videos -->
+                <h3 class="section-title">📹 Видео-инструкции</h3>
+                <div id="videos-list"></div>
+            </div>
+        </div>
+
+        <!-- Cart Screen -->
+        <div id="screen-cart" class="screen">
+            <div class="header">
+                <h1>Корзина</h1>
+                <p id="cart-count-text">0 товаров</p>
+            </div>
+            
+            <div class="content">
+                <div id="cart-content"></div>
+            </div>
+        </div>
+
+        <!-- Reminders Screen -->
+        <div id="screen-reminders" class="screen">
+            <div class="header">
+                <h1>Напоминания</h1>
+                <p>Отслеживайте очистку сантехники</p>
+            </div>
+            
+            <div class="content">
+                <div class="card info-card">
+                    <div class="emoji">🚰</div>
+                    <h3>Рекомендуем чистить</h3>
+                    <p>каждые 2-3 месяца</p>
+                </div>
+
+                <h3 class="section-title">Ваши смесители</h3>
+                <div id="reminders-list"></div>
+
+                <button class="btn btn-secondary" onclick="addReminder()" style="margin-top: 16px;">
+                    + Добавить смеситель
+                </button>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div id="screen-profile" class="screen">
+            <div class="header">
+                <h1>Профиль</h1>
+            </div>
+            
+            <div class="content">
+                <div class="card" style="text-align: center;">
+                    <div class="profile-avatar">👤</div>
+                    <p class="profile-name">Пользователь</p>
+                    <p class="profile-phone">+7 (XXX) XXX-XX-XX</p>
+                </div>
+
+                <div class="card" style="margin-top: 16px;">
+                    <div class="menu-item">
+                        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span class="label">Мои адреса</span>
+                        <span class="value">1 адрес</span>
+                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#B0BEC5;"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                    <div class="menu-item">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span class="label">История заказов</span>
+                        <span class="value">3 заказа</span>
+                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#B0BEC5;"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                    <div class="menu-item">
+                        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="label">Уведомления</span>
+                        <span class="value">Включены</span>
+                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#B0BEC5;"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                    <div class="menu-item">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        <span class="label">Настройки</span>
+                        <span class="value"></span>
+                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#B0BEC5;"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 16px;">
+                    <div class="menu-item" style="border-bottom: none;">
+                        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        <div>
+                            <p style="font-weight: 600;">Поддержка</p>
+                            <p style="font-size: 13px; color: var(--text-light);">Ответим на любые вопросы</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+            <button class="tab-item active" onclick="switchTab('home')">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>Главная</span>
+            </button>
+            <button class="tab-item" onclick="switchTab('cart')">
+                <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <span>Корзина</span>
+                <span class="tab-badge" id="cart-badge" style="display: none;">0</span>
+            </button>
+            <button class="tab-item" onclick="switchTab('reminders')">
+                <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span>Напоминания</span>
+            </button>
+            <button class="tab-item" onclick="switchTab('profile')">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span>Профиль</span>
+            </button>
+        </div>
+
+        <!-- Product Modal -->
+        <div class="modal-overlay" id="product-modal">
+            <div class="modal-content" id="product-modal-content"></div>
+        </div>
+
+        <!-- Order Modal -->
+        <div class="modal-overlay" id="order-modal">
+            <div class="modal-content" id="order-modal-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const products = [
+            {
+                id: 0,
+                name: 'Эконом',
+                description: '4 таблетки + ключ',
+                price: 990,
+                oldPrice: 1490,
+                badge: 'Попробовать',
+                popular: false,
+                items: ['4 очищающие таблетки', 'Универсальный ключ', 'Защитные перчатки', 'Инструкция'],
+                emoji: '💧',
+                color: '#A8D4E6'
+            },
+            {
+                id: 1,
+                name: 'Стандарт',
+                description: '10 таблеток + насос',
+                price: 1990,
+                oldPrice: 2990,
+                badge: '⭐ Хит продаж',
+                popular: true,
+                items: ['10 очищающих таблеток', 'Универсальный ключ', 'Защитные перчатки', 'Микрофибровая салфетка', 'Вакуумный мини-насос', 'Подробная инструкция'],
+                emoji: '💎',
+                color: '#8ED4BE'
+            },
+            {
+                id: 2,
+                name: 'Премиум',
+                description: 'Всё включено + мастер',
+                price: 4990,
+                oldPrice: null,
+                badge: 'VIP',
+                popular: false,
+                items: ['Всё из набора Стандарт', 'Выезд мастера на дом', 'Профессиональная очистка', 'Диагностика сантехники', 'Рекомендации по уходу'],
+                emoji: '👑',
+                color: '#FFD700',
+                warning: 'Выезд мастера только по Москве и МО'
+            }
+        ];
+
+        const videos = [
+            { id: 1, title: 'Как открутить аэратор', duration: '1:30', emoji: '🔧' },
+            { id: 2, title: 'Процесс очистки', duration: '2:45', emoji: '🧹' }
+        ];
+
+        let reminders = [
+            { id: 1, room: 'Ванная', lastCleaned: '15 дек 2025', nextCleaning: '15 мар 2026', daysLeft: 56 },
+            { id: 2, room: 'Кухня', lastCleaned: '20 дек 2025', nextCleaning: '20 мар 2026', daysLeft: 61 }
+        ];
+
+        let cart = [];
+
+        // Initialize
+        function init() {
+            renderProducts();
+            renderVideos();
+            renderReminders();
+            renderRemindersPreview();
+            updateCart();
+        }
+
+        // Switch tabs
+        function switchTab(tabId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + tabId).classList.add('active');
+            
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        // Render products
+        function renderProducts() {
+            const container = document.getElementById('products-list');
+            container.innerHTML = products.map(p => `
+                <div class="product-card" onclick="showProduct(${p.id})">
+                    <span class="product-badge ${p.popular ? 'popular' : ''}">${p.badge}</span>
+                    <div class="product-inner">
+                        <div class="product-image" style="background: linear-gradient(135deg, ${p.color}40 0%, ${p.color}20 100%);">
+                            ${p.emoji}
+                        </div>
+                        <div class="product-info">
+                            <h3>${p.name}</h3>
+                            <p class="desc">${p.description}</p>
+                            <div class="price-tag">
+                                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} ₽</span>` : ''}
+                                <span class="new-price">${p.price} ₽</span>
+                            </div>
+                        </div>
+                        <span class="chevron">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render videos
+        function renderVideos() {
+            const container = document.getElementById('videos-list');
+            container.innerHTML = videos.map(v => `
+                <div class="video-card">
+                    <div class="video-thumb">${v.emoji}</div>
+                    <div class="video-info">
+                        <h4>${v.title}</h4>
+                        <p>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            ${v.duration}
+                        </p>
+                    </div>
+                    <div class="play-btn">
+                        <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render reminders preview (for home screen)
+        function renderRemindersPreview() {
+            const container = document.getElementById('reminders-preview');
+            container.innerHTML = reminders.slice(0, 2).map(r => `
+                <div class="reminder-card">
+                    <div class="reminder-info" style="flex: 1;">
+                        <h4>${r.room}</h4>
+                        <p>Следующая: ${r.nextCleaning}</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill ${r.daysLeft < 30 ? 'warning' : ''}" style="width: ${Math.max(0, 100 - (r.daysLeft / 90 * 100))}%;"></div>
+                        </div>
+                    </div>
+                    <div class="reminder-days ${r.daysLeft < 30 ? 'warning' : 'ok'}">
+                        <div class="number">${r.daysLeft}</div>
+                        <div class="label">дней</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render full reminders list
+        function renderReminders() {
+            const container = document.getElementById('reminders-list');
+            container.innerHTML = reminders.map(r => `
+                <div class="card" style="margin-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <h4 style="font-weight: 700; margin-bottom: 4px;">${r.room}</h4>
+                            <p style="font-size: 13px; color: var(--text-light);">Последняя: ${r.lastCleaned}</p>
+                        </div>
+                        <span style="background: ${r.daysLeft < 30 ? '#FFF3E0' : '#E8F5E9'}; color: ${r.daysLeft < 30 ? '#FF9800' : '#4CAF50'}; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                            ${r.daysLeft < 30 ? 'Скоро' : 'В норме'}
+                        </span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="flex: 1;">
+                            <div class="progress-bar">
+                                <div class="progress-fill ${r.daysLeft < 30 ? 'warning' : ''}" style="width: ${Math.max(0, 100 - (r.daysLeft / 90 * 100))}%;"></div>
+                            </div>
+                        </div>
+                        <span style="font-size: 13px; color: var(--text-light); min-width: 70px;">${r.daysLeft} дней</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add reminder
+        function addReminder() {
+            const newReminder = {
+                id: Date.now(),
+                room: 'Новый смеситель',
+                lastCleaned: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
+                nextCleaning: new Date(Date.now() + 90*24*60*60*1000).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' }),
+                daysLeft: 90
+            };
+            reminders.push(newReminder);
+            renderReminders();
+            renderRemindersPreview();
+        }
+
+        // Show product modal
+        function showProduct(id) {
+            const p = products[id];
+            const modal = document.getElementById('product-modal');
+            const content = document.getElementById('product-modal-content');
+            
+            content.innerHTML = `
+                <div class="modal-header">
+                    <button class="modal-close" onclick="closeProductModal()">
+                        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    </button>
+                    <span class="product-badge ${p.popular ? 'popular' : ''}" style="position: static;">${p.badge}</span>
+                </div>
+                <div style="text-align: center;">
+                    <div class="product-detail-image" style="background: linear-gradient(135deg, ${p.color}40 0%, ${p.color}20 100%);">
+                        ${p.emoji}
+                    </div>
+                    <h2 class="product-detail-title">${p.name}</h2>
+                    <div class="product-detail-price">
+                        ${p.oldPrice ? `<span class="old-price">${p.oldPrice} ₽</span>` : ''}
+                        <span class="new-price">${p.price} ₽</span>
+                    </div>
+                </div>
+                <div style="margin-bottom: 24px;">
+                    <h4 class="product-items-title">В набор входит:</h4>
+                    ${p.items.map(item => `
+                        <div class="product-item">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            <span>${item}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                ${p.warning ? `<div class="product-warning">⚠️ ${p.warning}</div>` : ''}
+                <button class="btn" onclick="addToCart(${p.id}); closeProductModal();">
+                    Добавить в корзину — ${p.price} ₽
+                </button>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.remove('active');
+        }
+
+        // Cart functions
+        function addToCart(id) {
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.quantity++;
+            } else {
+                cart.push({ ...products[id], quantity: 1 });
+            }
+            updateCart();
+        }
+
+        function removeFromCart(id) {
+            const existing = cart.find(item => item.id === id);
+            if (existing && existing.quantity > 1) {
+                existing.quantity--;
+            } else {
+                cart = cart.filter(item => item.id !== id);
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            // Update badge
+            const badge = document.getElementById('cart-badge');
+            if (count > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = count;
+            } else {
+                badge.style.display = 'none';
+            }
+            
+            // Update cart count text
+            document.getElementById('cart-count-text').textContent = count + ' товаров';
+            
+            // Update cart content
+            const container = document.getElementById('cart-content');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="card empty-state">
+                        <div class="emoji">🛒</div>
+                        <h3>Корзина пуста</h3>
+                        <p>Добавьте товары из каталога</p>
+                        <button class="btn" onclick="switchTab('home'); document.querySelector('.tab-item').click();">
+                            Перейти к покупкам
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    ${cart.map(item => `
+                        <div class="card">
+                            <div class="cart-item">
+                                <div class="cart-item-image" style="background: linear-gradient(135deg, ${item.color}40 0%, ${item.color}20 100%);">
+                                    ${item.emoji}
+                                </div>
+                                <div class="cart-item-info">
+                                    <h4>${item.name}</h4>
+                                    <p class="price">${item.price} ₽</p>
+                                </div>
+                                <div class="quantity-control">
+                                    <button class="quantity-btn" onclick="removeFromCart(${item.id})">−</button>
+                                    <span class="quantity-num">${item.quantity}</span>
+                                    <button class="quantity-btn" onclick="addToCart(${item.id})">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                    
+                    <div class="card cart-summary">
+                        <div class="summary-row">
+                            <span class="label">Сумма</span>
+                            <span class="value">${total} ₽</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Доставка</span>
+                            <span class="value green">Бесплатно</span>
+                        </div>
+                        <div class="summary-total">
+                            <span class="label">Итого</span>
+                            <span class="value new-price">${total} ₽</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" style="margin-top: 16px;" onclick="showOrderModal()">
+                        Оформить заказ
+                    </button>
+                `;
+            }
+        }
+
+        // Order modal
+        function showOrderModal() {
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            const modal = document.getElementById('order-modal');
+            const content = document.getElementById('order-modal-content');
+            
+            content.innerHTML = `
+                <h2 style="margin-bottom: 20px; font-size: 22px;">Оформление заказа</h2>
+                
+                <div class="form-group">
+                    <label>Имя</label>
+                    <input type="text" placeholder="Ваше имя" id="order-name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="tel" placeholder="+7 (XXX) XXX-XX-XX" id="order-phone">
+                </div>
+                
+                <div class="form-group">
+                    <label>Адрес доставки</label>
+                    <input type="text" placeholder="Город, улица, дом, квартира" id="order-address">
+                </div>
+
+                <div class="order-total">
+                    <span>К оплате:</span>
+                    <span class="value">${total} ₽</span>
+                </div>
+                
+                <button class="btn" onclick="submitOrder()">
+                    Подтвердить заказ
+                </button>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function submitOrder() {
+            const content = document.getElementById('order-modal-content');
+            content.innerHTML = `
+                <div class="success-state">
+                    <div class="emoji">✅</div>
+                    <h2>Заказ оформлен!</h2>
+                    <p>Мы перезвоним вам в течение 30 минут для подтверждения</p>
+                    <button class="btn" onclick="closeOrderModal()">
+                        На главную
+                    </button>
+                </div>
+            `;
+            
+            cart = [];
+            updateCart();
+        }
+
+        function closeOrderModal() {
+            document.getElementById('order-modal').classList.remove('active');
+            switchTab('home');
+            document.querySelector('.tab-item').click();
+        }
+
+        // Close modals on overlay click
+        document.getElementById('product-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeProductModal();
+        });
+
+        document.getElementById('order-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeOrderModal();
+        });
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>

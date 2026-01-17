@@ -1,0 +1,18 @@
+{
+  "name": "Чистая вода",
+  "short_name": "Чистая вода",
+  "description": "Очистка смесителей с вау-эффектом",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FCFD",
+  "theme_color": "#7BC4DE",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%237BC4DE' width='512' height='512' rx='100'/><path fill='white' d='M256 80c-64 64-128 136-128 200 0 70.7 57.3 128 128 128s128-57.3 128-128c0-64-64-136-128-200z'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
